@@ -102,12 +102,6 @@ npm run dev
 # Clean build directory
 npm run clean
 
-# Security checks
-npm run security:check      # Run all security checks
-npm run security:secrets    # Scan for secrets and sensitive info
-npm run security:audit      # Check for dependency vulnerabilities
-```
-
 ## Project Structure
 
 ```
@@ -205,87 +199,6 @@ node build/index.js output1.xml output2.xml /path/to/output3.xml
 
 MIT
 
-## CI/CD Pipeline
-
-This project uses GitHub Actions for continuous integration and automated releases.
-
-### Workflows
-
-#### 🔄 **Continuous Integration** (`.github/workflows/ci.yml`)
-- **Triggers:** Push to main/master, Pull Requests
-- **Node.js versions:** 18, 20, 22
-- **Steps:**
-  - Install dependencies
-  - Run security checks
-  - Build project
-  - Verify build artifacts
-  - Test package creation
-
-#### 🚀 **Automated Release** (`.github/workflows/release.yml`)
-- **Trigger:** Push version tags (e.g., `v1.0.0`)
-- **Steps:**
-  - Run full security audit
-  - Build and test
-  - Publish to NPM with provenance
-  - Create GitHub release with automated changelog
-
-#### 🎛️ **Manual Release** (`.github/workflows/manual-release.yml`)
-- **Trigger:** Manual workflow dispatch
-- **Features:**
-  - Custom version specification
-  - Choose NPM dist-tag (latest, beta, alpha, next)
-  - Dry-run option for testing
-  - Optional GitHub release creation
-
-### Release Process
-
-#### Automated Release (Recommended)
-```bash
-# 1. Update version in package.json
-npm version patch  # or minor, major, prerelease
-
-# 2. Push the tag
-git push origin v1.0.0
-
-# 3. GitHub Actions automatically:
-#    - Runs security checks
-#    - Builds the project  
-#    - Publishes to NPM
-#    - Creates GitHub release
-```
-
-#### Manual Release
-1. Go to **Actions** tab in GitHub
-2. Select **Manual Release** workflow
-3. Click **Run workflow**
-4. Fill in the parameters:
-   - Version (e.g., `1.0.0`)
-   - NPM tag (latest, beta, etc.)
-   - Enable/disable GitHub release
-   - Dry run for testing
-
-### Security in CI/CD
-
-Every release automatically includes:
-- 🔍 **Secret scanning** (custom patterns)
-- 🛡️ **Dependency vulnerability checks**
-- ✅ **Build verification**
-- 📦 **Package integrity validation**
-
-### Required Secrets
-
-To enable automated publishing, add these secrets to your GitHub repository:
-
-- `NPM_TOKEN` - NPM authentication token with publish permissions
-
-### Getting NPM Token
-
-1. Login to [npmjs.com](https://www.npmjs.com)
-2. Go to **Access Tokens** in your profile
-3. Click **Generate New Token**
-4. Choose **Automation** type
-5. Copy the token and add it to GitHub Secrets
-
 ## Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
@@ -302,3 +215,9 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 8. **Open a Pull Request**
 
 The CI pipeline will automatically run tests and security checks on your PR.
+
+### Thanks
+
+Special thanks to the [Repomix](https://github.com/yamadashy/repomix) team for creating an excellent tool for packaging codebases into AI-friendly formats. This MCP server extends Repomix's capabilities by providing used to structured access to Repomix output files.
+
+Without Repomix's innovative approach to codebase analysis and packaging, this project wouldn't exist. We're grateful for their open-source contribution to the AI development community.
