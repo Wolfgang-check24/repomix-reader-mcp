@@ -16,7 +16,7 @@
     "grep",
     "reader"
   ],
-  "author": "",
+  "author": "Wolfgang Reithmeier",
   "license": "MIT",
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.0.0",
