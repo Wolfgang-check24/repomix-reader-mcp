@@ -1,0 +1,90 @@
+name: CI - Test and Security Checks
+
+on:
+  push:
+    branches: [ main, master, develop ]
+  pull_request:
+    branches: [ main, master, develop ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [18, 20, 22]
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+          
+      - name: Install dependencies
+        run: npm ci
+        
+      - name: Run security checks
+        run: npm run security:check
+        
+      - name: Build project
+        run: npm run build
+        
+      - name: Verify build output
+        run: |
+          if [ ! -d "build" ]; then
+            echo "❌ Build directory not found"
+            exit 1
+          fi
+          if [ ! -f "build/index.js" ]; then
+            echo "❌ Main build file not found"
+            exit 1
+          fi
+          echo "✅ Build verification passed"
+          
+      - name: Test package creation
+        run: npm pack --dry-run
+        
+      - name: Upload build artifacts
+        if: matrix.node-version == '18'
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-artifacts
+          path: build/
+          retention-days: 7
+
+  security-audit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+          
+      - name: Install dependencies
+        run: npm ci
+        
+      - name: Deep security audit
+        run: |
+          echo "🔍 Running comprehensive security checks..."
+          npm run security:secrets
+          npm audit --audit-level low
+          echo "✅ Security audit completed"
+          
+      - name: Check for secrets in git history
+        run: |
+          echo "🔍 Checking git history for potential secrets..."
+          # Basic check for common secret patterns in recent commits
+          if git log --oneline -10 | grep -iE "(password|secret|key|token)" > /dev/null; then
+            echo "⚠️  Found potential secrets in recent commit messages"
+            git log --oneline -10 | grep -iE "(password|secret|key|token)" || true
+            echo "Please review commit messages for sensitive information"
+          else
+            echo "✅ No obvious secrets found in recent commit messages"
+          fi

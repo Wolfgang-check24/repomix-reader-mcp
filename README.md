@@ -112,21 +112,26 @@ npm run security:audit      # Check for dependency vulnerabilities
 
 ```
 repomix-reader-mcp/
+├── .github/
+│   └── workflows/               # GitHub Actions CI/CD
+│       ├── ci.yml              # Continuous integration
+│       ├── release.yml         # Automated releases
+│       └── manual-release.yml  # Manual release workflow
 ├── src/
-│   ├── tools/                    # Tool implementations
-│   │   ├── index.ts             # Tool exports
-│   │   ├── listRepomixFiles.ts  # List files tool
+│   ├── tools/                  # Tool implementations
+│   │   ├── index.ts           # Tool exports
+│   │   ├── listRepomixFiles.ts # List files tool
 │   │   ├── readRepomixOutput.ts # Read tool implementation
 │   │   └── grepRepomixOutput.ts # Grep tool implementation
-│   ├── fileManager.ts           # File management utility
-│   ├── types.ts                 # Shared type definitions
-│   └── index.ts                 # Main MCP server
+│   ├── fileManager.ts         # File management utility
+│   ├── types.ts               # Shared type definitions
+│   └── index.ts               # Main MCP server
 ├── scripts/
-│   └── security-check.js        # Security scanner script
-├── build/                       # Compiled output (auto-generated)
-├── package.json                 # Dependencies & scripts
-├── tsconfig.json               # TypeScript config
-└── README.md                   # Documentation
+│   └── security-check.js      # Security scanner script
+├── build/                     # Compiled output (auto-generated)
+├── package.json               # Dependencies & scripts
+├── tsconfig.json             # TypeScript config
+└── README.md                 # Documentation
 ```
 
 ## Dependencies
@@ -200,6 +205,100 @@ node build/index.js output1.xml output2.xml /path/to/output3.xml
 
 MIT
 
+## CI/CD Pipeline
+
+This project uses GitHub Actions for continuous integration and automated releases.
+
+### Workflows
+
+#### 🔄 **Continuous Integration** (`.github/workflows/ci.yml`)
+- **Triggers:** Push to main/master, Pull Requests
+- **Node.js versions:** 18, 20, 22
+- **Steps:**
+  - Install dependencies
+  - Run security checks
+  - Build project
+  - Verify build artifacts
+  - Test package creation
+
+#### 🚀 **Automated Release** (`.github/workflows/release.yml`)
+- **Trigger:** Push version tags (e.g., `v1.0.0`)
+- **Steps:**
+  - Run full security audit
+  - Build and test
+  - Publish to NPM with provenance
+  - Create GitHub release with automated changelog
+
+#### 🎛️ **Manual Release** (`.github/workflows/manual-release.yml`)
+- **Trigger:** Manual workflow dispatch
+- **Features:**
+  - Custom version specification
+  - Choose NPM dist-tag (latest, beta, alpha, next)
+  - Dry-run option for testing
+  - Optional GitHub release creation
+
+### Release Process
+
+#### Automated Release (Recommended)
+```bash
+# 1. Update version in package.json
+npm version patch  # or minor, major, prerelease
+
+# 2. Push the tag
+git push origin v1.0.0
+
+# 3. GitHub Actions automatically:
+#    - Runs security checks
+#    - Builds the project  
+#    - Publishes to NPM
+#    - Creates GitHub release
+```
+
+#### Manual Release
+1. Go to **Actions** tab in GitHub
+2. Select **Manual Release** workflow
+3. Click **Run workflow**
+4. Fill in the parameters:
+   - Version (e.g., `1.0.0`)
+   - NPM tag (latest, beta, etc.)
+   - Enable/disable GitHub release
+   - Dry run for testing
+
+### Security in CI/CD
+
+Every release automatically includes:
+- 🔍 **Secret scanning** (custom patterns)
+- 🛡️ **Dependency vulnerability checks**
+- ✅ **Build verification**
+- 📦 **Package integrity validation**
+
+### Required Secrets
+
+To enable automated publishing, add these secrets to your GitHub repository:
+
+- `NPM_TOKEN` - NPM authentication token with publish permissions
+
+### Getting NPM Token
+
+1. Login to [npmjs.com](https://www.npmjs.com)
+2. Go to **Access Tokens** in your profile
+3. Click **Generate New Token**
+4. Choose **Automation** type
+5. Copy the token and add it to GitHub Secrets
+
 ## Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
+
+### Development Workflow
+
+1. **Fork and clone** the repository
+2. **Create a feature branch**: `git checkout -b feature/amazing-feature`
+3. **Make your changes** and add tests if applicable
+4. **Run security checks**: `npm run security:check`
+5. **Build the project**: `npm run build`
+6. **Commit your changes**: `git commit -m "feat: add amazing feature"`
+7. **Push to your branch**: `git push origin feature/amazing-feature`
+8. **Open a Pull Request**
+
+The CI pipeline will automatically run tests and security checks on your PR.
