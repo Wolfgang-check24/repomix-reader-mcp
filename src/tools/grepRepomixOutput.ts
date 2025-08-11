@@ -1,15 +1,16 @@
 import { Tool } from '@modelcontextprotocol/sdk/types.js';
 import { ToolDefinition } from '../types.js';
+import { fileManager } from '../fileManager.js';
 
 const toolDefinition: Tool = {
   name: 'grep_repomix_output',
-  description: 'Search for patterns in a Repomix XML output file',
+  description: 'Search for patterns in a Repomix XML output file. Use list_repomix_files to see available file IDs.',
   inputSchema: {
     type: 'object',
     properties: {
-      inputFile: {
+      fileId: {
         type: 'string',
-        description: 'Path to the Repomix XML output file to search',
+        description: 'ID of the Repomix XML output file to search (use list_repomix_files to see available IDs)',
       },
       pattern: {
         type: 'string',
@@ -31,27 +32,33 @@ const toolDefinition: Tool = {
         default: 100,
       },
     },
-    required: ['inputFile', 'pattern'],
+    required: ['fileId', 'pattern'],
   },
 };
 
 async function handleGrepRepomixOutput(args: {
-  inputFile: string;
+  fileId: string;
   pattern: string;
   flags?: string;
   contextLines?: number;
   maxMatches?: number;
 }) {
   const {
-    inputFile,
+    fileId,
     pattern,
     flags = '',
     contextLines = 2,
     maxMatches = 100,
   } = args;
 
+  // Get file path from file manager
+  const filePath = fileManager.getFilePath(fileId);
+  if (!filePath) {
+    throw new Error(`File with ID '${fileId}' not found. Use list_repomix_files to see available files.`);
+  }
+
   const fs = await import('fs/promises');
-  const content = await fs.readFile(inputFile, 'utf-8');
+  const content = await fs.readFile(filePath, 'utf-8');
   const lines = content.split('\n');
 
   // Create regex with provided flags

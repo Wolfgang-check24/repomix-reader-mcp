@@ -1,15 +1,16 @@
 import { Tool } from '@modelcontextprotocol/sdk/types.js';
 import { ToolDefinition } from '../types.js';
+import { fileManager } from '../fileManager.js';
 
 const toolDefinition: Tool = {
   name: 'read_repomix_output',
-  description: 'Read content from a Repomix XML output file with optional line range',
+  description: 'Read content from a Repomix XML output file with optional line range. Use list_repomix_files to see available file IDs.',
   inputSchema: {
     type: 'object',
     properties: {
-      inputFile: {
+      fileId: {
         type: 'string',
-        description: 'Path to the Repomix XML output file to read',
+        description: 'ID of the Repomix XML output file to read (use list_repomix_files to see available IDs)',
       },
       startLine: {
         type: 'number',
@@ -20,19 +21,25 @@ const toolDefinition: Tool = {
         description: 'Ending line number (1-based, inclusive). If not specified, reads to end.',
       },
     },
-    required: ['inputFile'],
+    required: ['fileId'],
   },
 };
 
 async function handleReadRepomixOutput(args: {
-  inputFile: string;
+  fileId: string;
   startLine?: number;
   endLine?: number;
 }) {
-  const { inputFile, startLine, endLine } = args;
+  const { fileId, startLine, endLine } = args;
+
+  // Get file path from file manager
+  const filePath = fileManager.getFilePath(fileId);
+  if (!filePath) {
+    throw new Error(`File with ID '${fileId}' not found. Use list_repomix_files to see available files.`);
+  }
 
   const fs = await import('fs/promises');
-  const content = await fs.readFile(inputFile, 'utf-8');
+  const content = await fs.readFile(filePath, 'utf-8');
   const lines = content.split('\n');
 
   const start = startLine ? Math.max(0, startLine - 1) : 0;

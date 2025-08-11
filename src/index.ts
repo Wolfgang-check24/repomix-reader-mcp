@@ -7,6 +7,7 @@ import {
   ListToolsRequestSchema,
 } from '@modelcontextprotocol/sdk/types.js';
 import { allTools } from './tools/index.js';
+import { fileManager } from './fileManager.js';
 
 // Create server instance
 const server = new Server(
@@ -55,11 +56,37 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
   }
 });
 
+// Parse command line arguments
+function parseArgs(): string[] {
+  const args = process.argv.slice(2);
+  
+  if (args.length === 0) {
+    console.error('Usage: repomix-reader-mcp <file1.xml> [file2.xml] [...]');
+    console.error('');
+    console.error('Example:');
+    console.error('  repomix-reader-mcp output1.xml output2.xml');
+    console.error('  repomix-reader-mcp /path/to/repomix-output.xml');
+    process.exit(1);
+  }
+
+  return args;
+}
+
 // Start the server
 async function main() {
-  const transport = new StdioServerTransport();
-  await server.connect(transport);
-  console.error('Repomix Reader MCP Server running on stdio');
+  try {
+    // Parse and initialize file manager
+    const filePaths = parseArgs();
+    await fileManager.initialize(filePaths);
+
+    // Start MCP server
+    const transport = new StdioServerTransport();
+    await server.connect(transport);
+    console.error('Repomix Reader MCP Server running on stdio');
+  } catch (error) {
+    console.error('Failed to start server:', error);
+    process.exit(1);
+  }
 }
 
 main().catch(console.error);

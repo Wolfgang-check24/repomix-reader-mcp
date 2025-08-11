@@ -10,11 +10,17 @@
     "dev": "tsx src/index.ts",
     "clean": "rm -rf build"
   },
-  "keywords": ["mcp", "repomix", "grep", "reader"],
+  "keywords": [
+    "mcp",
+    "repomix",
+    "grep",
+    "reader"
+  ],
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "@modelcontextprotocol/sdk": "^1.0.0"
+    "@modelcontextprotocol/sdk": "^1.0.0",
+    "minimatch": "^10.0.3"
   },
   "devDependencies": {
     "@types/node": "^20.0.0",
