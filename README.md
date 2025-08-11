@@ -89,22 +89,28 @@ Search for patterns in a Repomix output file with grep-like functionality.
 
 ## Development
 
+### Install dependencies
 ```bash
-# Install dependencies
 npm install
+```
 
-# Build the project
+### Build the project
+```bash
 npm run build
+```
 
-# Run in development mode
+### Run in development mode
+```bash
 npm run dev
+```
 
-# Clean build directory
+### Clean build directory
+```bash
 npm run clean
+```
 
 ## Project Structure
-
-```
+```bash
 repomix-reader-mcp/
 ├── .github/
 │   └── workflows/               # GitHub Actions CI/CD

@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "Simple Model Context Protocol server for reading and grep-searching Repomix output files",
   "main": "build/index.js",
+  "bin": {
+    "repomix-reader-mcp": "build/index.js"
+  },
   "type": "module",
   "scripts": {
     "build": "tsc",
