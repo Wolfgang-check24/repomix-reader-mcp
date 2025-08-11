@@ -1,6 +1,6 @@
 {
   "name": "repomix-reader-mcp",
-  "version": "1.0.1",
+  "version": "0.1.1",
   "description": "Simple Model Context Protocol server for reading and grep-searching Repomix output files",
   "main": "build/index.js",
   "bin": {

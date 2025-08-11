@@ -109,12 +109,12 @@ jobs:
           
       - name: Create GitHub Release
         if: inputs.create_github_release == true && inputs.dry_run == false
-        uses: actions/create-release@v1
+        uses: softprops/action-gh-release@v2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: v${{ inputs.version }}
-          release_name: Release v${{ inputs.version }}
+          name: Release v${{ inputs.version }}
           body: |
             ## Release v${{ inputs.version }}
             
