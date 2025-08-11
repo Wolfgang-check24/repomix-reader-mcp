@@ -8,7 +8,11 @@
     "build": "tsc",
     "start": "node build/index.js",
     "dev": "tsx src/index.ts",
-    "clean": "rm -rf build"
+    "clean": "rm -rf build",
+    "security:check": "npm run security:secrets && npm run security:audit",
+    "security:secrets": "node scripts/security-check.js",
+    "security:audit": "npm audit --audit-level moderate",
+    "prepublishOnly": "npm run security:check && npm run build"
   },
   "keywords": [
     "mcp",

@@ -101,6 +101,11 @@ npm run dev
 
 # Clean build directory
 npm run clean
+
+# Security checks
+npm run security:check      # Run all security checks
+npm run security:secrets    # Scan for secrets and sensitive info
+npm run security:audit      # Check for dependency vulnerabilities
 ```
 
 ## Project Structure
@@ -116,7 +121,9 @@ repomix-reader-mcp/
 │   ├── fileManager.ts           # File management utility
 │   ├── types.ts                 # Shared type definitions
 │   └── index.ts                 # Main MCP server
-├── build/                       # Compiled output
+├── scripts/
+│   └── security-check.js        # Security scanner script
+├── build/                       # Compiled output (auto-generated)
 ├── package.json                 # Dependencies & scripts
 ├── tsconfig.json               # TypeScript config
 └── README.md                   # Documentation
@@ -143,6 +150,8 @@ This MCP server provides secure file operations:
 - **Restricted File Access**: Only files specified at startup can be accessed
 - **No Path Traversal**: File access is limited to the pre-approved list
 - **Input Validation**: File IDs are validated against the available file list
+- **Automated Security Scanning**: Built-in tools to detect secrets and vulnerabilities
+- **Pre-publish Checks**: Automatic security scanning before npm publish
 
 ## Supported File Formats
 
