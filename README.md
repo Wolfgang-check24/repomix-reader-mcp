@@ -27,9 +27,9 @@ Configure your MCP-compatible client to use this server with the Repomix files y
 {
   "mcpServers": {
     "repomix-reader": {
-      "command": "node",
+      "command": "npx",
       "args": [
-        "/path/to/repomix-reader-mcp/build/index.js",
+        "repomix-reader-mcp",
         "/path/to/first-repomix-output.xml",
         "/path/to/second-repomix-output.xml"
       ]
