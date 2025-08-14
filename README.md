@@ -47,7 +47,7 @@ List all available Repomix files that can be read or searched.
 
 **Parameters:** None
 
-**Returns:** A list of available files with their IDs, filenames, and full paths.
+**Returns:** A list of available files with their IDs, filenames, and descriptions (extracted from user-provided headers in the XML files).
 
 #### `read_repomix_output`
 Read content from a Repomix output file with optional line range.

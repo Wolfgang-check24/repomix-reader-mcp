@@ -5,11 +5,20 @@ export interface RepomixFile {
   id: string;
   path: string;
   basename: string;
+  description?: string;
 }
 
 class FileManager {
   private files: Map<string, RepomixFile> = new Map();
   private initialized = false;
+
+  /**
+   * Extract user-provided header from repomix XML content
+   */
+  private extractUserProvidedHeader(content: string): string | undefined {
+    const headerMatch = content.match(/<user_provided_header>\s*(.*?)\s*<\/user_provided_header>/s);
+    return headerMatch ? headerMatch[1].trim() : undefined;
+  }
 
   /**
    * Initialize the file manager with a list of file paths
@@ -37,10 +46,20 @@ class FileManager {
       const basename = filePath.split('/').pop() || `file_${i}`;
       const id = (i + 1).toString();
 
+      // Extract user-provided header from XML content
+      let description: string | undefined;
+      try {
+        const content = await fs.readFile(filePath, 'utf8');
+        description = this.extractUserProvidedHeader(content);
+      } catch (error) {
+        console.error(`Warning: Could not read file content for ${filePath}: ${error}`);
+      }
+
       this.files.set(id, {
         id,
         path: filePath,
         basename,
+        description,
       });
     }
 
