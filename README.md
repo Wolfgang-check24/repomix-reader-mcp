@@ -44,6 +44,8 @@ Configure your MCP-compatible client to use this server with the Repomix files y
 
 See [Repomix documentation](https://github.com/yamadashy/repomix?tab=readme-ov-file#-usage) for more details.
 
+**Tip:** Always use `--header-text` to provide repository context - this text appears in `list_repomix_files` to help identify repositories.
+
 ```bash
 npx repomix \
   --ignore "**/node_modules/,**/*.json,**/test/**,**/*.svg,**/*.pdf" \
@@ -58,6 +60,7 @@ npx repomix \
 For private repositories with SSH:
 ```bash
 npx repomix \
+  --header-text "Private Repository" \
   --remote git@github.com:username/private-repo.git \
   --remote-branch develop \
   -o ~/repomix-repo-files/private-repo.xml
