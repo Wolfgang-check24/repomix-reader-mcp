@@ -40,6 +40,29 @@ Configure your MCP-compatible client to use this server with the Repomix files y
 
 **Note:** You must specify at least one Repomix output file as a command line argument. Only these files will be accessible through the MCP tools.
 
+### Generating Repomix Files from Remote Repositories
+
+See [Repomix documentation](https://github.com/yamadashy/repomix?tab=readme-ov-file#-usage) for more details.
+
+```bash
+npx repomix \
+  --ignore "**/node_modules/,**/*.json,**/test/**,**/*.svg,**/*.pdf" \
+  --compress \
+  --no-security-check \
+  --header-text "Example React Repository" \
+  --remote https://github.com/facebook/react.git \
+  --remote-branch main \
+  -o ~/repomix-repo-files/react-repo.xml
+```
+
+For private repositories with SSH:
+```bash
+npx repomix \
+  --remote git@github.com:username/private-repo.git \
+  --remote-branch develop \
+  -o ~/repomix-repo-files/private-repo.xml
+```
+
 ### Available Tools
 
 #### `list_repomix_files`
